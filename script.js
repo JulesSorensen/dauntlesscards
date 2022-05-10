@@ -78,6 +78,7 @@ const createBehemot = () => {
         localStorage.setItem('behemotList', JSON.stringify(beheArray));
     }
     showBehemots(JSON.parse(localStorage.getItem('behemotList')), { behemot: behemot, menace: menaceNb });
+    checkSelector();
 }
 
 const resetStorage = () => {
