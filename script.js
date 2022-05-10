@@ -213,7 +213,7 @@ const showBehemots = (behemotsArr, options = { behemot: sessionStorage.getItem('
             <h3>${name}</h3>
             <p>Menace: ${curBehemot.menace}</p>
             <div class='buttonsDiv' id='buttonsDiv-${curBehemot.id}'>
-                <img class="icon" src="./images/icons/camera.png" alt="photo" onclick="cameraOn('${curBehemot.id}')"></img>
+                <img class="icon" src="./images/icons/camera.png" alt="photo" onclick="cameraOn('${curBehemot.id}', '${curBehemot.behemotType}')"></img>
                 <img class="icon" src="./images/icons/pen.png" alt="edit" onclick="editCharacter('${curBehemot.id}')"></img>
                 <img class="icon" src="./images/icons/trash.png" alt="delete" onclick="deleteCharacter('${curBehemot.id}')"></img>
             </div>
@@ -243,7 +243,7 @@ const resetCard = (id) => {
             <h3>${name}</h3>
             <p>Menace: ${behemot.menace}</p>
             <div class='buttonsDiv' id='buttonsDiv-${behemot.id}'>
-                <img class="icon" src="./images/icons/camera.png" alt="photo" onclick="cameraOn('${behemot.id}')"></img>
+                <img class="icon" src="./images/icons/camera.png" alt="photo" onclick="cameraOn('${behemot.id}', '${behemot.behemotType}')"></img>
                 <img class="icon" src="./images/icons/pen.png" alt="edit" onclick="editCharacter('${behemot.id}')"></img>
                 <img class="icon" src="./images/icons/trash.png" alt="delete" onclick="deleteCharacter('${behemot.id}')"></img>
             </div>
@@ -327,14 +327,14 @@ const editSaveBehemot = (id) => {
     checkSelector();
 }
 
-const cameraOn = async (id) => {
+const cameraOn = async (id, name) => {
     const contentElement = document.getElementById(`card-${id}`);
     contentElement.innerHTML = `
     <div id="dataurl-container">
         <video id="video" width="320" height="240" autoplay></video>
     </div>
     <div class='buttonsDiv'>
-    <img id="click-cross-${id}" onclick="resetCard('${id}')" class="icon" src="./images/icons/cross.png" alt="cancel">
+        <img id="click-cross-${id}" onclick="resetCard('${id}')" class="icon" src="./images/icons/cross.png" alt="cancel">
         <img id="click-photo-${id}" class="icon" src="./images/icons/camera.png" alt="cancel">
     </div>
     `;
@@ -359,7 +359,9 @@ const cameraOn = async (id) => {
         const canvas = document.getElementById("canvas");
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
         let image_data_url = canvas.toDataURL('image/jpeg');
-        downloadURI(image_data_url, "behemot.png");
+
+        downloadURI(image_data_url, `${name}.png`);
+
         videoDiv.innerHTML = '<video id="video" width="320" height="240" autoplay></video>';
         video = document.querySelector("#video");
         video.srcObject = stream;
