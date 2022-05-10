@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dauntless</title>
+    <link rel="icon" href="images/dauntless.ico" />
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <div class="center">
+        <div class="bg"></div>
+        <img src="https://logos-world.net/wp-content/uploads/2021/03/Dauntless-Logo.png" alt="dauntlesslogo"
+            id="dauntlesslogo">
+
+        <div id="errorContent"></div>
+
+        <div id="content">
+            <button id="playButton" style="--content: 'PLAY';">
+                <div class="left"></div>
+                PLAY
+                <div class="right"></div>
+            </button>
+            <div id="cardsUI">
+                <div id="newBehemot" class="newBehemot">
+                    <img id="infoIcon" onclick="getInfo()" class="icon" src="./images/icons/info.png" alt="info">
+                    <img src="./images/behemots/gnasher.png" alt="Behemot" id="behemotImg">
+                    <select name="behemotToAdd" id="behemotSelector">
+                        <option id="gnasher" value="gnasher">Gnasher</option>
+                        <option id="quillshot" value="quillshot">Quillshot</option>
+                        <option id="shrike" value="shrike">Shrike</option>
+                        <option id="skarn" value="skarn">Skarn</option>
+                        <option id="hellion" value="hellion">Hellion</option>
+                        <option id="boreus" value="boreus">Boreus</option>
+                        <option id="stormclaw" value="stormclaw">Stormclaw</option>
+                        <option id="valomyr" value="valomyr">Valomyr</option>
+                        <option id="shrowd" value="shrowd">Shrowd</option>
+                    </select>
+                    <label for="menaceNb">Menace</label>
+                    <input type="number" name="menaceNb" id="menaceNb" value="1">
+                    <img onclick="createBehemot()" id="addBehemot" class="icon" src="./images/icons/plus.png" alt="plus">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
