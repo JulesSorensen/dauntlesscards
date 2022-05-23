@@ -1,0 +1,20 @@
+{
+    "name": "Dauntless",
+    "short_name": "Dauntless",
+    "start_url": ".",
+    "background_color": "#1f2896",
+    "theme_color": "#7fe2fe",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "images/dauntless192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "images/dauntless512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

@@ -1,7 +1,15 @@
-// global var
-var intervalStarted = false;
-var infoOpened = false;
-var visibilityChangeEventStarted = false;
+"use scrict";
+// global variables
+let intervalStarted = false;
+let infoOpened = false;
+let visibilityChangeEventStarted = false;
+
+// service worker
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./serviceworker.js").catch((error) => {
+        console.log("Service Worker error", error);
+    });
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
     if (!sessionStorage.getItem('currentlyPlaying')) {
@@ -21,13 +29,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 const selectorListener = (event) => {
     document.getElementById("behemotImg").src = `./images/behemots/${event.target.value}.png`;
-    const oldBehemotSelected = sessionStorage.getItem('behemotSelected') || undefined;
+
+    const oldBehemotSelected = sessionStorage.getItem('behemotSelected');
     if (oldBehemotSelected) {
         const oldOption = document.getElementById(oldBehemotSelected);
         oldOption.selected = false;
         oldOption.defaultSelected = false;
         document.getElementById('behemotSelector').value = event.target.value;
     }
+
     const newOption = document.getElementById(event.target.value);
     newOption.selected = true;
     newOption.defaultSelected = true;
@@ -36,7 +46,7 @@ const selectorListener = (event) => {
 }
 
 const checkSelector = () => {
-    let behemotSelected = sessionStorage.getItem('behemotSelected') || undefined;
+    let behemotSelected = sessionStorage.getItem('behemotSelected');
 
     if (behemotSelected) {
         document.getElementById("behemotImg").src = `./images/behemots/${behemotSelected}.png`;
@@ -54,7 +64,7 @@ const checkSelector = () => {
 }
 
 const checkBehemotList = () => {
-    let behemotList = localStorage.getItem('behemotList') || undefined;
+    const behemotList = localStorage.getItem('behemotList');
 
     if (behemotList && behemotList.length > 0) {
         showBehemots(JSON.parse(behemotList));
@@ -62,20 +72,15 @@ const checkBehemotList = () => {
 }
 
 const createBehemot = () => {
-    let behemot = document.getElementById("behemotSelector").value;
-    let menaceNb = parseInt(document.getElementById("menaceNb").value) || false;
+    const behemot = document.getElementById("behemotSelector").value;
+    const menaceNb = parseInt(document.getElementById("menaceNb").value);
+
     if (menaceNb) {
-        let beheArray = localStorage.getItem('behemotList') || '[]';
-        beheArray = JSON.parse(beheArray);
-        let newId = (beheArray.length > 0) ? (beheArray[beheArray.length - 1].id + 1) : (1);
+        const beheArray = JSON.parse(localStorage.getItem('behemotList')) ?? [];
+        const newId = (beheArray[beheArray.length - 1]?.id ?? 0) + 1;
 
-        beheArray.push({
-            id: newId,
-            behemotType: behemot,
-            menace: menaceNb
-        });
-
-        localStorage.setItem('behemotList', JSON.stringify(beheArray));
+        // spread pour ajouter
+        localStorage.setItem('behemotList', JSON.stringify([...beheArray, { id: newId, behemotType: behemot, menace: menaceNb }]));
     }
     showBehemots(JSON.parse(localStorage.getItem('behemotList')), { behemot: behemot, menace: menaceNb });
     checkSelector();
@@ -122,18 +127,16 @@ const getInfo = () => {
     setAllInfos();
     if (!intervalStarted) {
         intervalStarted = true;
-        setInterval(() => {
-            setAllInfos();
-        }, 10000);
+        setInterval(setAllInfos, 10000);
     }
 }
 
 const setAllInfos = () => {
     if (infoOpened) {
-        document.getElementById('result').innerHTML = navigator.deviceMemory || '?'
+        document.getElementById('result').innerHTML = navigator.deviceMemory ?? '?'
 
         if ('getBattery' in navigator || ('battery' in navigator && 'Promise' in window)) {
-            var batteryPromise;
+            let batteryPromise;
 
             if ('getBattery' in navigator) {
                 batteryPromise = navigator.getBattery();
@@ -149,7 +152,7 @@ const setAllInfos = () => {
 
         if (!visibilityChangeEventStarted) {
             visibilityChangeEventStarted = true;
-            var hidden, visibilityChange;
+            let hidden, visibilityChange;
 
             if (typeof document.hidden !== "undefined") {
                 hidden = "hidden";
@@ -180,7 +183,7 @@ const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const showBehemots = (behemotsArr, options = { behemot: sessionStorage.getItem('behemotSelected') || "gnasher", menace: 1 }) => {
+const showBehemots = (behemotsArr, options = { behemot: sessionStorage.getItem('behemotSelected') ?? "gnasher", menace: 1 }) => {
     const contentElement = document.getElementById('cardsUI');
     contentElement.innerHTML = `
     <div id="newBehemot" class="newBehemot">
@@ -201,7 +204,7 @@ const showBehemots = (behemotsArr, options = { behemot: sessionStorage.getItem('
         <input type="number" name="menaceNb" id="menaceNb" value=${options.menace}>
         <img onclick="createBehemot()" id="addBehemot" class="icon" src="./images/icons/plus.png" alt="plus">
     </div>
-    `
+    `;
 
     for (const curBehemot of behemotsArr) {
         const name = capitalizeFirstLetter(curBehemot.behemotType);
@@ -218,21 +221,15 @@ const showBehemots = (behemotsArr, options = { behemot: sessionStorage.getItem('
                 <img class="icon" src="./images/icons/trash.png" alt="delete" onclick="deleteCharacter('${curBehemot.id}')"></img>
             </div>
         </div>
-        `
+        `;
     }
 
 }
 
 const resetCard = (id) => {
-    let beheArray = localStorage.getItem('behemotList') || '[]';
-    beheArray = JSON.parse(beheArray);
+    const beheArray = JSON.parse(localStorage.getItem('behemotList')) ?? [];
 
-    let behemot = false;
-    beheArray.map((curBehemot) => {
-        if (curBehemot.id == id) {
-            behemot = curBehemot;
-        }
-    })
+    const behemot = beheArray.find((element) => { element.id == id });
 
     if (behemot) {
         const name = capitalizeFirstLetter(behemot.behemotType);
@@ -254,20 +251,20 @@ const resetCard = (id) => {
 }
 
 const editEventListener = (id, create = true) => {
-    const selector = document.getElementById(`behemotSelector-${id}`);
+    const element = document.getElementById(`behemotSelector-${id}`);
     const listenerEditImg = (event) => {
         document.getElementById(`behemotImgEdit-${id}`).src = `./images/behemots/${event.target.value}.png`;
     }
     if (create) {
-        selector.addEventListener('change', listenerEditImg);
+        element.addEventListener('change', listenerEditImg);
     } else {
-        selector.removeEventListener('change', listenerEditImg);
+        element.removeEventListener('change', listenerEditImg);
     }
 }
 
 const editCharacter = (id) => {
     const contentElement = document.getElementById(`card-${id}`);
-    let beheArray = localStorage.getItem('behemotList') || '[]';
+    let beheArray = localStorage.getItem('behemotList') ?? '[]';
     beheArray = JSON.parse(beheArray);
     let behemot = false;
 
@@ -307,18 +304,18 @@ const editCharacter = (id) => {
 const editSaveBehemot = (id) => {
     let behemot = document.getElementById(`behemotSelector-${id}`).value || false;
     let menaceNb = parseInt(document.getElementById(`menaceNb-${id}`).value) || false;
-    let beheArray = localStorage.getItem('behemotList') || '[]';
-    beheArray = JSON.parse(beheArray);
+    let beheArray = JSON.parse(localStorage.getItem('behemotList')) || [];
 
     beheArray = beheArray.map((curBehemot) => {
-        if (curBehemot.id == id) {
+        let newBehe = structuredClone(curBehemot)
+        if (newBehe.id == id) {
             editEventListener(id, false);
             if (behemot && menaceNb) {
-                curBehemot.behemotType = behemot;
-                curBehemot.menace = menaceNb;
+                newBehe.behemotType = behemot;
+                newBehe.menace = menaceNb;
             }
         }
-        return curBehemot;
+        return newBehe;
     });
 
     localStorage.setItem('behemotList', JSON.stringify(beheArray));
@@ -339,16 +336,16 @@ const cameraOn = async (id, name) => {
     </div>
     `;
 
-    let videoDiv = document.getElementById("dataurl-container");
-    let video = document.querySelector("#video");
-    let click_button = document.querySelector(`#click-photo-${id}`);
+    const videoDiv = document.getElementById("dataurl-container");
+    const video = document.querySelector("#video");
+    const click_button = document.querySelector(`#click-photo-${id}`);
 
     let stream = null;
 
     try {
         stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
     } catch (error) {
-        alert(error.message);
+        // TODO afficher une erreur
         return;
     }
 
@@ -369,7 +366,7 @@ const cameraOn = async (id, name) => {
 }
 
 const downloadURI = (uri, name) => {
-    var link = document.createElement("a");
+    let link = document.createElement("a");
     link.download = name;
     link.href = uri;
     document.body.appendChild(link);
@@ -379,21 +376,16 @@ const downloadURI = (uri, name) => {
 }
 
 const deleteCharacter = (id) => {
-    let beheArray = localStorage.getItem('behemotList') || '[]';
-    beheArray = JSON.parse(beheArray);
+    const beheArray = JSON.parse(localStorage.getItem('behemotList')) ?? [];
 
-    let indexToDelete = false;
-    beheArray.map((el, index) => {
-        if (el.id == id) {
-            indexToDelete = index;
-        }
+    const indexToDelete = beheArray.find((element) => { console.log(element); return element.id == id });
+
+    const newBeheArray = beheArray.filter((item) => {
+        return true;
+        // return item.id !== indexToDelete.id
     });
 
-    if (indexToDelete !== false) {
-        beheArray.splice(indexToDelete, 1);
-    }
-
-    localStorage.setItem('behemotList', JSON.stringify(beheArray));
+    localStorage.setItem('behemotList', JSON.stringify(newBeheArray));
 
     showBehemots(beheArray);
     checkSelector();
