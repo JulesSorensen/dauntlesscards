@@ -247,6 +247,7 @@ const resetCard = (id) => {
         `
     }
 
+    location.reload();
     checkSelector();
 }
 
@@ -332,7 +333,7 @@ const cameraOn = async (id, name) => {
     </div>
     <div class='buttonsDiv'>
         <img id="click-cross-${id}" onclick="resetCard('${id}')" class="icon" src="./images/icons/cross.png" alt="cancel">
-        <img id="click-photo-${id}" class="icon" src="./images/icons/camera.png" alt="cancel">
+        <img id="click-photo-${id}" class="icon" src="./images/icons/camera.png" alt="photo">
     </div>
     `;
 
@@ -378,15 +379,12 @@ const downloadURI = (uri, name) => {
 const deleteCharacter = (id) => {
     const beheArray = JSON.parse(localStorage.getItem('behemotList')) ?? [];
 
-    const indexToDelete = beheArray.find((element) => { console.log(element); return element.id == id });
-
-    const newBeheArray = beheArray.filter((item) => {
-        return true;
-        // return item.id !== indexToDelete.id
-    });
+    const behemotToDelete = beheArray.find((element) => element.id == id);
+    const newBeheArray = beheArray.filter((item) => item.id !== behemotToDelete.id);
 
     localStorage.setItem('behemotList', JSON.stringify(newBeheArray));
 
     showBehemots(beheArray);
     checkSelector();
+    location.reload();
 }

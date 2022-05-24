@@ -322,7 +322,6 @@ select {
   display: none;
   background: rgba(0,0,0,0.6);
   border-radius: 15px;
-  display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
   width: 80%;
