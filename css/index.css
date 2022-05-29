@@ -185,6 +185,7 @@ select {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 /* BUTTON */
@@ -327,6 +328,7 @@ select {
   width: 80%;
   height: auto;
   margin: auto auto 15px auto;
+  padding-bottom: 20px;
 }
 
 ::-webkit-scrollbar {
@@ -345,4 +347,14 @@ select {
 
 #video {
   width: 200px;
+}
+
+#errorDiv {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#errorMsg {
+  color: red;
 }

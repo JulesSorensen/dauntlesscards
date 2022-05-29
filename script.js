@@ -186,7 +186,8 @@ const capitalizeFirstLetter = (string) => {
 const showBehemots = (behemotsArr, options = { behemot: sessionStorage.getItem('behemotSelected') ?? "gnasher", menace: 1 }) => {
     const contentElement = document.getElementById('cardsUI');
     contentElement.innerHTML = `
-    <div id="newBehemot" class="newBehemot">
+        <div id="errorDiv"><p id="errorMsg"></p></div>
+        <div id="newBehemot" class="newBehemot">
         <img id="infoIcon" onclick="getInfo()" class="icon" src="./images/icons/info.png" alt="info">
         <img src="./images/behemots/${options.behemot.toLowerCase()}.png" alt="Behemot" id="behemotImg">
         <select name="behemotToAdd" id="behemotSelector">
@@ -229,12 +230,12 @@ const showBehemots = (behemotsArr, options = { behemot: sessionStorage.getItem('
 const resetCard = (id) => {
     const beheArray = JSON.parse(localStorage.getItem('behemotList')) ?? [];
 
-    const behemot = beheArray.find((element) => { element.id == id });
+    const behemot = beheArray.find((element) => element.id == id);
 
     if (behemot) {
         const name = capitalizeFirstLetter(behemot.behemotType);
 
-        document.getElementById(`card-${behemot.id}`).innerHTML += `
+        document.getElementById(`card-${behemot.id}`).innerHTML = `
             <h1>${name}</h1>
             <img id='behemotImg-${id}' class="behemotImg" src="./images/behemots/${behemot.behemotType}.png" alt="Picture of ${name}">
             <h3>${name}</h3>
@@ -244,10 +245,9 @@ const resetCard = (id) => {
                 <img class="icon" src="./images/icons/pen.png" alt="edit" onclick="editCharacter('${behemot.id}')"></img>
                 <img class="icon" src="./images/icons/trash.png" alt="delete" onclick="deleteCharacter('${behemot.id}')"></img>
             </div>
-        `
+        `;
     }
 
-    location.reload();
     checkSelector();
 }
 
@@ -337,16 +337,17 @@ const cameraOn = async (id, name) => {
     </div>
     `;
 
-    const videoDiv = document.getElementById("dataurl-container");
-    const video = document.querySelector("#video");
+    let videoDiv = document.getElementById("dataurl-container");
+    let video = document.querySelector("#video");
     const click_button = document.querySelector(`#click-photo-${id}`);
 
     let stream = null;
 
     try {
         stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        document.getElementById("errorMsg").innerHTML = "";
     } catch (error) {
-        // TODO afficher une erreur
+        document.getElementById("errorMsg").innerHTML = "Impossible d'avoir accès à la caméra";
         return;
     }
 
@@ -384,7 +385,6 @@ const deleteCharacter = (id) => {
 
     localStorage.setItem('behemotList', JSON.stringify(newBeheArray));
 
-    showBehemots(beheArray);
+    showBehemots(newBeheArray);
     checkSelector();
-    location.reload();
 }

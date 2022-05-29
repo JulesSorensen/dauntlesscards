@@ -6,7 +6,7 @@
 
 Cliquez sur "jouer" pour commencer l'aventure !  
 Vous pourrez créer des cartes des différents montres appellés "behemots" du jeu vidéo Dauntless, en personnalisant leur niveau de menance !  
-Une fois une carte créer via le bouton +, vous pouvez éditez la carte, la supprimer, ou prendre une photo avec le Behemot !
+Une fois une carte créer via le bouton +, vous pouvez éditez la carte, la supprimer, ou prendre une photo avec le Behemot car son nom sera dans le nom de la photo téléchargée !
 
 ### Storage
 
@@ -32,6 +32,16 @@ Les suivants peuvent être retrouvés en cliquant sur le bouton "info" au niveau
 Le suivant peut être retrouvé en cliquant sur l'îcone photo sur un behemot ajouté:
 
 - Prise de photo et vue en temps réel, cliquez sur l'icone photo pour prendre et télécharger la photo qui contient le nom du behemot avec lequel vous l'avez prise
+
+## Autre
+
+L'application est bien responsive, les cards se mettent en dessous si il n'y a plus de place.
+
+L'utilisation du spread a été utile au niveau de l'ajout de cartes.
+
+Le PWA est fonctionnel.
+
+L'affichage d'erreur est fonctionnel (lorsque la caméra n'a pas été autorisée)
 
 ## What Web Can Do Today
 
